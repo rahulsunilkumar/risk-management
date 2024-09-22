@@ -69,8 +69,13 @@ for _ in range(num_simulations):
         simulated_path = np.random.normal(mean_return, vol, num_days)
         simulated_paths.append(simulated_path)
     
-    # Calculate the portfolio returns over the simulation period
-    portfolio_simulated = np.sum(np.array(simulated_paths).T.dot(weights), axis=1)
+    # Convert simulated_paths into a 2D array (num_assets x num_days) and transpose
+    simulated_paths = np.array(simulated_paths).T  # Shape: (num_days, num_assets)
+    
+    # Calculate the portfolio returns over the simulation period (dot product of weights and simulated returns)
+    portfolio_simulated = np.dot(simulated_paths, weights)  # Shape: (num_days,)
+    
+    # Store the cumulative product of returns to get the portfolio value over time
     monte_carlo_simulations.append(np.cumprod(1 + portfolio_simulated) * capital)
 
 # Convert to DataFrame for easy plotting
@@ -92,3 +97,4 @@ ax.set_title("Distribution of Final Portfolio Values")
 ax.set_xlabel("Portfolio Value ($)")
 ax.set_ylabel("Frequency")
 st.pyplot(fig)
+
